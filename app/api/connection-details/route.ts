@@ -29,11 +29,11 @@ export async function GET() {
     }
 
     // Generate participant token
-    const clientId = 507;
-    const clientName = '와이즈병원';
-    const clientPhone = '010-1234-5678';
-    const clientAddress = '서울시 강남구 역삼동';
-    const siteId = 'wisedental';
+    // const clientId = 507;
+    // const clientName = '와이즈병원';
+    // const clientPhone = '010-1234-5678';
+    // const clientAddress = '서울시 강남구 역삼동';
+    // const siteId = 'wisedental';
 
     // const participantName = `${clientId}_${clientName}_${clientPhone}_${clientAddress}_${siteId}`;
     // const participantIdentity = `voice_assistant_user_${Math.floor(Math.random() * 10_000)}`;
