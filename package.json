@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack --port 3001",
+    "dev": "next dev --turbopack --port 3002",
     "build": "next build",
-    "start": "dotenv -e .env -- next start --port 3001",
+    "start": "dotenv -e .env -- next start --port 3002",
     "build-deploy": "git pull && pnpm install && pnpm build && pm2 restart ecosystem.config.js",
     "lint": "next lint",
     "format": "prettier --write .",
