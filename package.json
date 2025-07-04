@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev --turbopack --port 3001",
     "build": "next build",
-    "start": "next start",
+    "start": "dotenv -e .env -- next start --port 3001",
+    "build-deploy": "git pull && pnpm install && pnpm build && pm2 restart ecosystem.config.js",
     "lint": "next lint",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
@@ -21,6 +22,7 @@
     "@radix-ui/react-toolbar": "^1.1.10",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^17.0.1",
     "livekit-client": "^2.13.3",
     "livekit-server-sdk": "^2.13.0",
     "motion": "^12.16.0",
@@ -38,6 +40,7 @@
     "@types/node": "^22.0.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv-cli": "^8.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
     "eslint-config-prettier": "^10.1.5",
