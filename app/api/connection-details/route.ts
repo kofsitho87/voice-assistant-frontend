@@ -16,7 +16,7 @@ export type ConnectionDetails = {
   participantToken: string;
 };
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     if (LIVEKIT_URL === undefined) {
       throw new Error('LIVEKIT_URL is not defined');
@@ -28,18 +28,16 @@ export async function GET() {
       throw new Error('LIVEKIT_API_SECRET is not defined');
     }
 
-    // Generate participant token
-    // const clientId = 507;
-    // const clientName = '와이즈병원';
-    // const clientPhone = '010-1234-5678';
-    // const clientAddress = '서울시 강남구 역삼동';
-    // const siteId = 'wisedental';
+    // URL에서 query parameters 추출
+    const { searchParams } = new URL(request.url);
+    const siteId = searchParams.get('siteId')!;
+    const phoneNumber = searchParams.get('phoneNumber')!;
+    const userId = searchParams.get('userId')!;
 
-    // const participantName = `${clientId}_${clientName}_${clientPhone}_${clientAddress}_${siteId}`;
-    // const participantIdentity = `voice_assistant_user_${Math.floor(Math.random() * 10_000)}`;
-    const participantName = "Dan";
-    const participantIdentity = `53e66d3a-b767-45d5-9ff1-3735572d4486`;
-    const roomName = `voice_assistant_room_${Math.floor(Math.random() * 10_000)}`;
+    const participantName = phoneNumber;
+    const participantIdentity = userId;
+    // const roomName = `voice_assistant_room_${Math.floor(Math.random() * 10_000)}`;
+    const roomName = `${siteId}_${Math.floor(Math.random() * 10_000)}`;
     const participantToken = await createParticipantToken(
       { identity: participantIdentity, name: participantName },
       roomName

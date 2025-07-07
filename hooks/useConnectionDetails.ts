@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ConnectionDetails } from '@/app/api/connection-details/route';
+import { getParticipantToken } from '@/app/actions';
 
-export default function useConnectionDetails() {
+
+export default function useConnectionDetails({siteId, phoneNumber, userId}: {siteId: string, phoneNumber: string, userId: string}) {
   // Generate room connection details, including:
   //   - A random Room name
   //   - A random Participant name
@@ -19,6 +21,12 @@ export default function useConnectionDetails() {
       process.env.NEXT_PUBLIC_CONN_DETAILS_ENDPOINT ?? '/api/connection-details',
       window.location.origin
     );
+    
+    // Query parameters 추가
+    url.searchParams.append('siteId', siteId);
+    url.searchParams.append('phoneNumber', phoneNumber);
+    url.searchParams.append('userId', userId);
+    
     fetch(url.toString())
       .then((res) => res.json())
       .then((data) => {
@@ -29,7 +37,11 @@ export default function useConnectionDetails() {
         console.error('Error fetching connection details:', error);
         alert(error.message);
       });
-  }, []);
+    // getParticipantToken({siteId, phoneNumber, userId}).then((data) => {
+    //   console.log(data);
+    //   setConnectionDetails(data);
+    // });
+  }, [siteId, phoneNumber, userId]);
 
   useEffect(() => {
     fetchConnectionDetails();

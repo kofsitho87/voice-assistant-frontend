@@ -1,58 +1,69 @@
-'use client';
+"use client"
 
-import * as React from 'react';
-import { Room, RoomEvent } from 'livekit-client';
-import { motion } from 'motion/react';
-import { RoomAudioRenderer, RoomContext, StartAudio } from '@livekit/components-react';
-import { toastAlert } from '@/components/alert-toast';
-import { SessionView } from '@/components/session-view';
-import { Toaster } from '@/components/ui/sonner';
-import { Welcome } from '@/components/welcome';
-import useConnectionDetails from '@/hooks/useConnectionDetails';
-import type { AppConfig } from '@/lib/types';
+import * as React from "react"
+import { Room, RoomEvent } from "livekit-client"
+import { motion } from "motion/react"
+import { RoomAudioRenderer, RoomContext, StartAudio } from "@livekit/components-react"
+import { toastAlert } from "@/components/alert-toast"
+import { SessionView } from "@/components/session-view"
+import { Toaster } from "@/components/ui/sonner"
+import { Welcome } from "@/components/welcome"
+import useConnectionDetails from "@/hooks/useConnectionDetails"
+import type { AppConfig } from "@/lib/types"
+import { useSearchParams, useParams } from "next/navigation"
 
-const MotionSessionView = motion.create(SessionView);
-const MotionWelcome = motion.create(Welcome);
+const MotionSessionView = motion.create(SessionView)
+const MotionWelcome = motion.create(Welcome)
 
 interface AppProps {
-  appConfig: AppConfig;
+  appConfig: AppConfig
 }
 
 export function App({ appConfig }: AppProps) {
-  const [sessionStarted, setSessionStarted] = React.useState(false);
-  const { supportsChatInput, supportsVideoInput, supportsScreenShare, startButtonText } = appConfig;
+  const [sessionStarted, setSessionStarted] = React.useState(false)
+  const { supportsChatInput, supportsVideoInput, supportsScreenShare, startButtonText } = appConfig
 
   const capabilities = {
     supportsChatInput,
     supportsVideoInput,
     supportsScreenShare,
-  };
+  }
 
-  const { connectionDetails, refreshConnectionDetails } = useConnectionDetails();
+  const searchParams = useSearchParams()
+  const params = useParams()
+  const siteId = params.siteId as string
+  const phoneNumber = searchParams.get("phone")
+  const userId = "53e66d3a-b767-45d5-9ff1-3735572d4486"
 
-  const room = React.useMemo(() => new Room(), []);
+  const { connectionDetails, refreshConnectionDetails } = useConnectionDetails({
+    siteId,
+    phoneNumber: phoneNumber ?? "",
+    userId,
+  })
+
+  const room = React.useMemo(() => new Room(), [])
 
   React.useEffect(() => {
     const onDisconnected = () => {
-      setSessionStarted(false);
-      refreshConnectionDetails();
-    };
+      setSessionStarted(false)
+      refreshConnectionDetails()
+    }
     const onMediaDevicesError = (error: Error) => {
       toastAlert({
-        title: 'Encountered an error with your media devices',
+        title: "Encountered an error with your media devices",
         description: `${error.name}: ${error.message}`,
-      });
-    };
-    room.on(RoomEvent.MediaDevicesError, onMediaDevicesError);
-    room.on(RoomEvent.Disconnected, onDisconnected);
+      })
+    }
+    room.on(RoomEvent.MediaDevicesError, onMediaDevicesError)
+    room.on(RoomEvent.Disconnected, onDisconnected)
     return () => {
-      room.off(RoomEvent.Disconnected, onDisconnected);
-      room.off(RoomEvent.MediaDevicesError, onMediaDevicesError);
-    };
-  }, [room, refreshConnectionDetails]);
+      room.off(RoomEvent.Disconnected, onDisconnected)
+      room.off(RoomEvent.MediaDevicesError, onMediaDevicesError)
+    }
+  }, [room, refreshConnectionDetails])
 
   React.useEffect(() => {
-    if (sessionStarted && room.state === 'disconnected' && connectionDetails) {
+    if (sessionStarted && room.state === "disconnected" && connectionDetails) {
       Promise.all([
         room.localParticipant.setMicrophoneEnabled(true, undefined, {
           preConnectBuffer: true,
@@ -60,34 +71,38 @@ export function App({ appConfig }: AppProps) {
         room.connect(connectionDetails.serverUrl, connectionDetails.participantToken),
       ]).catch((error) => {
         toastAlert({
-          title: 'There was an error connecting to the agent',
+          title: "There was an error connecting to the agent",
           description: `${error.name}: ${error.message}`,
-        });
-      });
+        })
+      })
     }
     return () => {
-      room.disconnect();
-    };
-  }, [room, sessionStarted, connectionDetails]);
+      room.disconnect()
+    }
+  }, [room, sessionStarted, connectionDetails])
 
   return (
     <>
       <MotionWelcome
-        key="welcome"
-        startButtonText={startButtonText}
+        key='welcome'
+        phoneNumber={phoneNumber ?? ""}
         onStartCall={() => setSessionStarted(true)}
         disabled={sessionStarted}
         initial={{ opacity: 0 }}
         animate={{ opacity: sessionStarted ? 0 : 1 }}
-        transition={{ duration: 0.5, ease: 'linear', delay: sessionStarted ? 0 : 0.5 }}
+        transition={{
+          duration: 0.5,
+          ease: "linear",
+          delay: sessionStarted ? 0 : 0.5,
+        }}
       />
 
       <RoomContext.Provider value={room}>
         <RoomAudioRenderer />
-        <StartAudio label="Start Audio" />
+        <StartAudio label='Start Audio' />
         {/* --- */}
         <MotionSessionView
-          key="session-view"
+          key='session-view'
           capabilities={capabilities}
           sessionStarted={sessionStarted}
           disabled={!sessionStarted}
@@ -95,7 +110,7 @@ export function App({ appConfig }: AppProps) {
           animate={{ opacity: sessionStarted ? 1 : 0 }}
           transition={{
             duration: 0.5,
-            ease: 'linear',
+            ease: "linear",
             delay: sessionStarted ? 0.5 : 0,
           }}
         />
@@ -103,5 +118,5 @@ export function App({ appConfig }: AppProps) {
 
       <Toaster />
     </>
-  );
+  )
 }

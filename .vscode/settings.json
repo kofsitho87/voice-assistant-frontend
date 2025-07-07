@@ -1,0 +1,13 @@
+{
+	"workbench.colorCustomizations": {
+		"activityBar.background": "#2F2F18",
+		"titleBar.activeBackground": "#414221",
+		"titleBar.activeForeground": "#FBFBF8"
+	},
+	"editor.defaultFormatter": "biomejs.biome",
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"quickfix.biome": "explicit"
+	},
+	"cSpell.words": ["sonner", "livekit", "biome", "skrim", "wisedental"]
+}
