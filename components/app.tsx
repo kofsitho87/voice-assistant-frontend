@@ -21,7 +21,7 @@ interface AppProps {
 
 export function App({ appConfig }: AppProps) {
   const [sessionStarted, setSessionStarted] = React.useState(false)
-  const { supportsChatInput, supportsVideoInput, supportsScreenShare, startButtonText } = appConfig
+  const { supportsChatInput, supportsVideoInput, supportsScreenShare } = appConfig
 
   const capabilities = {
     supportsChatInput,
